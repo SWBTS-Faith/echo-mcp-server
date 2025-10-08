@@ -1,4 +1,4 @@
-"""Tools for the Template Agent"""
+"""MCP Server Template - Replace with your server description"""
 import os
 import logging
 import sys
@@ -7,7 +7,7 @@ from starlette.responses import JSONResponse
 from fastmcp import FastMCP
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.tools import template_function
+from src.tools import example_function
 
 # Enhanced logging configuration (cloud-compatible, no file logging)
 logging.basicConfig(
@@ -17,10 +17,10 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout)
     ]
 )
-logger = logging.getLogger("venture.server")
+logger = logging.getLogger("mcp.server")
 
 # Add error logger for critical issues
-error_logger = logging.getLogger("venture.server.errors")
+error_logger = logging.getLogger("mcp.server.errors")
 error_logger.setLevel(logging.ERROR)
 error_handler = logging.StreamHandler(sys.stderr)
 error_handler.setFormatter(logging.Formatter(
@@ -29,39 +29,44 @@ error_handler.setFormatter(logging.Formatter(
 error_logger.addHandler(error_handler)
 
 # Create the MCP server instance
+# TODO: Update the name and instructions for your specific MCP server
 mcp = FastMCP(
-    name="Template-MCP",
+    name="My-MCP-Server",  # Change this to your server name
     instructions="""
-        This server provides a template of tools for any platform.
+        Replace this with instructions describing what your MCP server does.
+        This will help AI clients understand how to use your tools effectively.
     """
 )
 
+# TODO: Replace this example tool with your own MCP tools
 @mcp.tool()
-async def template_function_tool(input: dict):
-    """Generate a template function - a template function for any platform.
+async def example_tool(input: dict):
+    """Example MCP tool - replace this with your own tool.
 
-    Creates a template function for any platform.
-
-    Enhanced with Perplexity AI research to provide more informed, relevant template functions with
-    optional URL references to helpful resources and insights.
+    This is a template tool that demonstrates how to create MCP tools.
+    Replace this function with your own tools and update the function name,
+    docstring, and implementation.
 
     Args:
-        input: Information about the user including background and preferences.
+        input: Input parameters for your tool.
 
     Returns:
-        Dict 
+        Tool result - customize this return type for your needs.
     """
-    return await template_function(input)
+    # TODO: Replace this call with your actual tool implementation
+    return await example_function(input)
 
 @mcp.custom_route("/health", methods=["GET"])
 async def health_check(request):
-    return JSONResponse({"status": "healthy", "service": "template-mcp-server"})
+    # TODO: Update the service name in the response
+    return JSONResponse({"status": "healthy", "service": "my-mcp-server"})
 
 # Create ASGI app from MCP server
 mcp_app = mcp.http_app(transport="streamable-http")
 
 # Create a main FastAPI app that includes both MCP routes and root health endpoint
-app = FastAPI(title="Template MCP Server", lifespan=mcp_app.lifespan)
+# TODO: Update the title to match your server name
+app = FastAPI(title="My MCP Server", lifespan=mcp_app.lifespan)
 
 # Add CORS middleware
 app.add_middleware(
@@ -75,10 +80,11 @@ app.add_middleware(
 # # Mount MCP routes under /mcp
 app.mount("/", mcp_app)
 
-# # Root health endpoint for Railway
+# Root health endpoint for Railway
+# TODO: Update the service name in the response
 @app.get("/health")
 async def root_health_check():
-    return {"status": "healthy", "service": "template-mcp-server"}
+    return {"status": "healthy", "service": "my-mcp-server"}
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))

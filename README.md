@@ -1,5 +1,63 @@
-# mcp-server-template
-Simple template for creating MCP servers quickly in python, deployable via railway.
+# MCP Server Template
+
+A template for creating Model Context Protocol (MCP) servers in Python, deployable via Railway. This template provides a basic structure that you can customize by swapping out the functions in `src/tools.py` and updating references in `server.py`.
+
+## Getting Started
+
+### 1. Clone and Setup
+
+```bash
+git clone <your-repo-url>
+cd mcp-server-template
+uv sync  # or pip install -e .
+```
+
+### 2. Customize Your Tools
+
+Replace the example functions in `src/tools.py` with your own MCP tools:
+
+```python
+# Replace this:
+async def template_function(input: dict):
+    """Generate a template function - a template function for any platform."""
+    return await utility_function()
+
+# With your own functions:
+async def my_custom_tool(input: dict):
+    """Description of what your tool does."""
+    # Your implementation here
+    pass
+```
+
+### 3. Update Server Configuration
+
+Update `server.py` to register your new tools and customize the server name/instructions:
+
+```python
+# Change the server name and instructions
+mcp = FastMCP(
+    name="My-Custom-MCP",  # Change this
+    instructions="""
+        Description of what your MCP server does.
+    """
+)
+
+# Update the tool registration
+@mcp.tool()
+async def my_custom_tool(input: dict):  # Update function name
+    """Tool description and documentation."""
+    return await my_custom_function(input)  # Update function call
+```
+
+### 4. Update Project Metadata
+
+Update `pyproject.toml` with your project details:
+
+```toml
+[project]
+name = "my-mcp-server"  # Change this
+description = "Description of your MCP server"  # Change this
+```
 
 ## Build
 

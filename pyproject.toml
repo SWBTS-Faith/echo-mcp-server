@@ -1,7 +1,7 @@
 [project]
-name = "mcp-server-template"
+name = "my-mcp-server"  # TODO: Change this to your project name
 version = "0.1.0"
-description = "Add your description here"
+description = "MCP Server Template - Replace with your server description"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
