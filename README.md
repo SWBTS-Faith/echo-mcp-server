@@ -21,6 +21,12 @@ A prayer companion MCP server that provides guided prayers and semantic search c
 pip install -r requirements.txt
 ```
 
+**Note:** The server uses minimal dependencies for faster deployment:
+- `fastmcp` - MCP server framework
+- `uvicorn` - ASGI server
+- `sentence-transformers` - Semantic search
+- `numpy` - Required by sentence-transformers
+
 2. Ensure the prayer database exists:
 ```bash
 cd data/scripts
