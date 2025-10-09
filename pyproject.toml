@@ -1,11 +1,10 @@
 [project]
-name = "my-mcp-server"  # TODO: Change this to your project name
+name = "echo-prayer-mcp-server"
 version = "0.1.0"
-description = "MCP Server Template - Replace with your server description"
+description = "Echo Prayer MCP Server - A prayer companion with guided prayers and semantic search (readonly database)"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.118.0",
     "fastmcp>=2.12.4",
     "httpx>=0.25.0",
     "langchain>=0.3.27",
@@ -19,5 +18,8 @@ dependencies = [
     "mcp-ui-server>=0.1.0",
     "modal>=1.1.4",
     "python-dotenv>=1.0.0",
+    "sentence-transformers>=2.2.2",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
     "uvicorn>=0.37.0",
 ]

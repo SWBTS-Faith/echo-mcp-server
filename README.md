@@ -1,92 +1,167 @@
-# MCP Server Template
+# Echo Prayer MCP Server
 
-A template for creating Model Context Protocol (MCP) servers in Python, deployable via Railway. This template provides a basic structure that you can customize by swapping out the functions in `src/tools.py` and updating references in `server.py`.
+A prayer companion MCP server that provides guided prayers and semantic search capabilities with a readonly database.
 
-## Getting Started
+## Features
 
-### 1. Clone and Setup
+### Prayer Tools (No Authentication Required)
 
+- **One Minute Prayer**: Get a random prayer for quick spiritual connection
+- **Guided Prayer Generator**: Find relevant prayers using semantic search
+- **Pray Together**: Receive encouragement, condolences, and advice
+- **Generate Prayer Request**: Create structured prayer requests based on topics
+- **Browse Categories**: View all available prayer categories
+- **Get Prayer by ID**: Retrieve a specific prayer by its ID
+- **Get Prayers by Category**: View prayers from a specific category
+
+## Installation
+
+1. Install dependencies:
 ```bash
-git clone <your-repo-url>
-cd mcp-server-template
-uv sync  # or pip install -e .
+pip install -r requirements.txt
 ```
 
-### 2. Customize Your Tools
+2. Ensure the prayer database exists:
+```bash
+cd data/scripts
+python create_database.py
+```
 
-Replace the example functions in `src/tools.py` with your own MCP tools:
+3. Run the server:
+```bash
+python server.py
+```
 
+## Usage
+
+### Basic Prayer Tools
+
+#### One Minute Prayer
 ```python
-# Replace this:
-async def template_function(input: dict):
-    """Generate a template function - a template function for any platform."""
-    return await utility_function()
-
-# With your own functions:
-async def my_custom_tool(input: dict):
-    """Description of what your tool does."""
-    # Your implementation here
-    pass
+# Get a random prayer for quick spiritual connection
+result = await one_minute_prayer_tool()
 ```
 
-### 3. Update Server Configuration
-
-Update `server.py` to register your new tools and customize the server name/instructions:
-
+#### Guided Prayer Generator
 ```python
-# Change the server name and instructions
-mcp = FastMCP(
-    name="My-Custom-MCP",  # Change this
-    instructions="""
-        Description of what your MCP server does.
-    """
-)
+# Search for prayers related to anxiety
+result = await guided_prayer_generator_tool("anxiety", limit=3)
 
-# Update the tool registration
-@mcp.tool()
-async def my_custom_tool(input: dict):  # Update function name
-    """Tool description and documentation."""
-    return await my_custom_function(input)  # Update function call
+# Filter by specific category
+result = await guided_prayer_generator_tool("healing", feed_title="Abiding & Presence")
 ```
 
-### 4. Update Project Metadata
+#### Pray Together
+```python
+# Get encouragement
+result = await pray_together_tool("encouragement")
 
-Update `pyproject.toml` with your project details:
+# Get condolence message
+result = await pray_together_tool("condolence")
 
-```toml
-[project]
-name = "my-mcp-server"  # Change this
-description = "Description of your MCP server"  # Change this
+# Get advice
+result = await pray_together_tool("advice")
 ```
 
-## Build
-
-Install dependencies with `uv` (preferred) or `pip`:
-
-```bash
-uv sync
-
-# or
-
-pip install -e .
+#### Generate Prayer Request
+```python
+# Create a prayer request for healing
+result = await generate_prayer_request_tool("healing", "recovering from surgery")
 ```
 
-## Run (Uvicorn Deployment)
-
-Start the API server with Uvicorn:
-
-```bash
-uvicorn server:app --host 0.0.0.0 --port 8000
+#### Browse Categories
+```python
+# Get all available prayer categories
+result = await get_available_categories_tool()
 ```
 
-And then, if testing via MCP inspector, connect with a proxy via streamable-http at:
+#### Get Prayer by ID
+```python
+# Get a specific prayer by its ID
+result = await get_prayer_by_id_tool(prayer_id=1)
 ```
-http://0.0.0.0:8000/mcp
+
+#### Get Prayers by Category
+```python
+# Get prayers from a specific category
+result = await get_prayers_by_category_tool("Abiding & Presence", limit=5)
 ```
+
+## Database Structure
+
+The server uses a readonly SQLite database:
+
+### Guided Prayers Database (`data/db/guided_prayers.db`)
+- **guided_prayers** table with columns:
+  - `id`: Primary key
+  - `feed_title`: Prayer category
+  - `prayer_title`: Prayer title
+  - `prayer_description`: Prayer content
+  - `prayer_steps`: Formatted prayer steps
+  - `description_embedding`: Semantic embedding for search
+
+## Semantic Search
+
+The server uses the `all-MiniLM-L6-v2` sentence transformer model to generate embeddings for prayer descriptions, enabling intelligent semantic search. Users can find relevant prayers using natural language queries.
+
+## Local Testing with MCP Clients
+
+For local testing with MCP clients, use the provided `.mcp.json` configuration file:
+
+```json
+{
+  "mcpServers": {
+    "echo-prayer": {
+      "command": "python",
+      "args": ["server.py"],
+      "cwd": "/Users/john/repos/echo-mcp-server",
+      "env": {
+        "PORT": "8000"
+      },
+      "description": "Echo Prayer MCP Server - A prayer companion with guided prayers and semantic search",
+      "capabilities": {
+        "tools": true,
+        "resources": false,
+        "prompts": false
+      }
+    }
+  }
+}
+```
+
+### Using with Claude Desktop
+
+1. Copy the `.mcp.json` file to your Claude Desktop configuration directory:
+   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+2. Restart Claude Desktop
+
+3. The Echo Prayer MCP Server will be available as a tool in Claude Desktop
+
+### Using with Other MCP Clients
+
+The server exposes the following MCP tools:
+- `one_minute_prayer_tool`
+- `guided_prayer_generator_tool`
+- `pray_together_tool`
+- `generate_prayer_request_tool`
+- `get_available_categories_tool`
+- `get_prayer_by_id_tool`
+- `get_prayers_by_category_tool`
+
+## API Endpoints
+
+- `GET /health`: Health check endpoint
+- MCP tools are available through the FastMCP framework
+
+## Environment Variables
+
+- `PORT`: Server port (default: 8000)
 
 ## Deploy to Railway
 
-This template includes Railway configuration for easy deployment (Python-only, no Node.js required):
+This server includes Railway configuration for easy deployment:
 
 1. **Set up environment variables**: Copy `env.example` to `.env` and add your API keys:
    ```bash
@@ -111,11 +186,5 @@ This template includes Railway configuration for easy deployment (Python-only, n
    - Sign in to [Railway](https://railway.app/) and create a new project
    - Choose "Deploy from GitHub repo" and select your repository
    - Railway will automatically detect your Python application and deploy it
-
-The `railway.json` configuration includes:
-- Automatic dependency installation via `uv sync --frozen` using `pyproject.toml`
-- Uvicorn server startup via `uv run` on Railway's assigned port
-- Health check endpoint monitoring at `/health`
-- Automatic restarts on failure (up to 10 retries)
 
 Your MCP server will be available at the Railway-provided URL, and you can connect MCP clients using the Railway domain + `/mcp` endpoint.
