@@ -53,7 +53,8 @@ mcp = FastMCP(
         from a curated database of guided prayers with embeddings for intelligent matching.
         
         No authentication required - all tools are available for immediate use.
-    """
+    """,
+    static_tools=True,
 )
 
 # Prayer Tools (Readonly Database)
