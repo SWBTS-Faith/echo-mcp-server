@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "echo-prayer": {
+      "command": "python",
+      "args": ["server.py"],
+      "cwd": "/Users/john/repos/echo-mcp-server",
+      "env": {
+        "PORT": "8000"
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+[project]
+name = "echo-prayer-mcp-server"
+version = "0.1.0"
+description = "Echo Prayer MCP Server - A prayer companion with guided prayers and semantic search (readonly database)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastmcp>=2.12.4",
+    "uvicorn>=0.37.0",
+    "sentence-transformers>=2.2.2",
+    "numpy>=1.24.0",
+]
